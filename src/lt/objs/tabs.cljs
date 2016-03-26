@@ -12,7 +12,8 @@
             [lt.util.style :refer [->px]]
             [lt.util.js :refer [now]]
             [crate.core :as crate]
-            [crate.binding :refer [bound map-bound subatom]])
+            [crate.binding :refer [bound map-bound subatom]]
+			[clojure.string :as string])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 (load/js "core/node_modules/lighttable/ui/dragdrop.js" :sync)
@@ -106,7 +107,10 @@
         :obj-id (object/->id e)
         :pos pos}
    [:span.file-name
-    (->name e)]
+	(if (= (str (->name e)) "index.js") 
+		(string/join "/" (take-last 2 (string/split (str (->path e)) #"/")))
+		(->name e))
+	]
    (when (object/raise-reduce e :close-button+ false)
      (close-tab label))]
   ;; Disable middle-click pasting in linux
